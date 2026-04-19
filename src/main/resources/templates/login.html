@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FindIt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v=4)}">
+</head>
+<body>
+
+    <nav class="navbar animate-drop-down">
+        <a href="/" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            FindIt
+        </a>
+    </nav>
+
+    <div class="container" style="max-width: 500px; margin-top: 8rem;">
+        <div class="card-3d animate-fade-in" style="transform: translateZ(20px);">
+            <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-main); display: flex; align-items: center; gap: 0.8rem;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                Sign In
+            </h2>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}" style="background: rgba(255, 50, 50, 0.2); border: 1px solid rgba(255, 50, 50, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; color: #ff8b8b;"></div>
+
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">For prototype testing, use any username and the hardcoded password: <strong>password</strong></p>
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="e.g. JohnDoe" required>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter 'password'" required autocomplete="off">
+                </div>
+
+                <div style="margin-top: 2.5rem;">
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 1.2rem; font-size: 1.1rem; border-radius: 12px;">Login Securely</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Include inline script to reuse the mousemove 3D background logic naturally -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+            const card = document.querySelector('.card-3d');
+            if(card) card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg) translateZ(10px)`;
+        });
+    </script>
+</body>
+</html>

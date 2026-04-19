@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - FindIt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v=6)}">
+</head>
+<body>
+    <nav class="navbar animate-drop-down">
+        <a href="/" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            FindIt
+        </a>
+        <div class="nav-links" style="margin-left: auto;">
+            <a href="/">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container animate-fade-in" style="margin-top: 2rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem;">My Dashboard</h2>
+        
+        <div th:if="${successMessage}" class="alert" th:text="${successMessage}"></div>
+
+        <h3 style="margin-bottom: 1rem; color: var(--text-main);">Items I Reported</h3>
+        <div class="grid">
+            <div th:each="itemEntry : ${itemsWithClaims}" class="card-3d-wrapper">
+                <div class="card-3d" style="display:flex; flex-direction:column; height: 100%;">
+                    <div class="card-content-3d" style="display:flex; flex-direction:column; height: 100%;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+                            <div>
+                                <span th:class="${itemEntry.item.type.name() == 'LOST' ? 'badge badge-lost' : 'badge badge-found'}" 
+                                      th:text="${itemEntry.item.type}">TYPE</span>
+                                <span th:if="${itemEntry.item.itemStatus != 'OPEN'}" class="badge" style="background: var(--bg-hover); margin-left: 0.5rem;" th:text="${itemEntry.item.itemStatus}"></span>
+                            </div>
+                            <small style="color: var(--text-muted); font-weight: 500;" th:text="${itemEntry.item.dateLostOrFound}"></small>
+                        </div>
+                        <h3 th:text="${itemEntry.item.title}" style="margin-bottom: 1rem; font-size: 1.5rem; letter-spacing: -0.5px;"></h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem; flex: 1; line-height: 1.6;" th:text="${itemEntry.item.description}"></p>
+
+                        <div th:if="${!itemEntry.claims.isEmpty()}" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <h4 style="margin-bottom: 0.5rem; color: var(--primary);">Claims on this Item</h4>
+                            <div th:each="claim : ${itemEntry.claims}" style="margin-bottom: 1rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--text-main);">Claimant:</strong> <span th:text="${claim.claimantUsername}"></span></p>
+                                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--text-main);">Details:</strong> <span th:text="${claim.proofDetails}"></span></p>
+                                <p style="font-size: 0.9rem; margin-bottom: 1rem;"><strong style="color: var(--text-main);">Contact:</strong> <span th:text="${claim.contactEmail}"></span> | <span th:text="${claim.contactPhone}"></span></p>
+                                
+                                <div th:if="${claim.status.name() == 'PENDING'}" style="display: flex; gap: 0.5rem;">
+                                    <form th:action="@{'/claim/' + ${claim.id} + '/approve'}" method="POST" style="flex: 1;">
+                                        <button type="submit" class="btn-primary" style="width: 100%; padding: 0.5rem; font-size: 0.8rem; background: #28a745; border-color: #28a745;">Accept</button>
+                                    </form>
+                                    <form th:action="@{'/claim/' + ${claim.id} + '/reject'}" method="POST" style="flex: 1;">
+                                        <button type="submit" class="btn-secondary" style="width: 100%; padding: 0.5rem; font-size: 0.8rem; color: #dc3545; border-color: #dc3545;">Reject</button>
+                                    </form>
+                                </div>
+                                <div th:if="${claim.status.name() != 'PENDING'}">
+                                    <span class="badge" th:text="${claim.status}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(itemsWithClaims)}" class="card-3d-wrapper" style="grid-column: 1 / -1;">
+                <div class="card-3d" style="text-align:center; padding: 5rem;">
+                    <div class="card-content-3d">
+                        <h3 style="color: var(--text-muted); font-weight: 400;">You haven't reported any items yet.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Item - FindIt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v=6)}">
+</head>
+<body>
+    <nav class="navbar animate-drop-down">
+        <a href="/" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            FindIt
+        </a>
+        <div class="nav-links" style="margin-left: auto;">
+            <a href="/">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container animate-fade-in" style="max-width: 600px; margin-top: 4rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Claim Found Item</h2>
+        
+        <div th:if="${errorMessage}" class="alert" style="background: rgba(220, 53, 69, 0.2); border-color: rgba(220, 53, 69, 0.5);" th:text="${errorMessage}">
+        </div>
+
+        <div class="card-3d-wrapper" style="perspective: none; margin-bottom: 2rem;">
+            <div class="card-content-3d" style="background: rgba(255,255,255,0.05); padding: 1.5rem; text-align: center; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <h3 th:text="${item.title}" style="margin-bottom: 0.5rem; font-size: 1.2rem;"></h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" th:text="${item.description}"></p>
+            </div>
+        </div>
+
+        <form th:action="@{'/claim/' + ${item.id}}" method="POST" class="animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="form-group">
+                <label class="form-label">Proof of Ownership / Details</label>
+                <textarea name="proofDetails" class="form-control" rows="4" placeholder="Describe unique features, serial numbers, or provide links to prove this item is yours..." required></textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label">Your Phone Number</label>
+                    <input type="text" name="contactPhone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Email</label>
+                    <input type="email" name="contactEmail" class="form-control" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; font-size: 1.1rem;">Submit Claim</button>
+        </form>
+    </div>
+</body>
+</html>

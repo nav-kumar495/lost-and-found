@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Item - FindIt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v=7)}">
+</head>
+<body>
+
+    <nav class="navbar animate-drop-down">
+        <a href="/" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            FindIt
+        </a>
+        
+        <form action="/" method="GET" style="display: flex; gap: 0.5rem; flex: 1; max-width: 500px; margin: 0 2rem;">
+            <select name="filter" class="form-control" style="width: auto; padding: 0.5rem; background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                <option value="ALL" th:selected="${currentFilter == 'ALL'}" style="color: black;">All Items</option>
+                <option value="LOST" th:selected="${currentFilter == 'LOST'}" style="color: black;">Lost</option>
+                <option value="FOUND" th:selected="${currentFilter == 'FOUND'}" style="color: black;">Found</option>
+            </select>
+            <input type="text" name="q" th:value="${searchQuery}" placeholder="Search items..." class="form-control" style="padding: 0.5rem 1rem; border-color: rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);">
+            <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem;">Search</button>
+        </form>
+
+        <div class="nav-links">
+            <a href="/lost">Lost Items</a>
+            <a href="/found">Found Items</a>
+            <a href="/report" class="btn-primary">+ Report Item</a>
+            <!-- Auth Section -->
+            <a th:if="${currentUser == null}" href="/login" class="btn-secondary" style="border: 1px solid rgba(255,255,255,0.2);">Login</a>
+            <div th:if="${currentUser != null}" style="display: flex; align-items: center; gap: 1rem; margin-left: 0.5rem; padding-left: 1rem; border-left: 1px solid rgba(255,255,255,0.2);">
+                <span style="color: var(--text-main); font-weight: 600;" th:text="${currentUser}"></span>
+                <a href="/logout" style="color: var(--text-muted); font-size: 0.9rem;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container animate-fade-in" style="max-width: 800px;">
+        
+        <div class="card-3d-wrapper">
+            <div class="card-3d" style="padding: 3.5rem;">
+                <div class="card-content-3d">
+                    <h1 style="margin-bottom: 1rem; font-size: 2.5rem; letter-spacing: -1px;">Report an Item</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem;">Please fill out the details accurately to help with the matching process.</p>
+                    
+                    <form th:action="@{/report}" th:object="${item}" method="post">
+                        
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <label for="type">Report Type *</label>
+                                <select id="type" th:field="*{type}" class="form-control" required style="cursor: pointer;">
+                                    <option value="LOST">I Lost this item</option>
+                                    <option value="FOUND">I Found this item</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="dateLostOrFound">Date of Event</label>
+                                <input type="date" id="dateLostOrFound" th:field="*{dateLostOrFound}" class="form-control" required>
+                                <style>
+                                    /* Quick fix for datepicker icon color on dark theme */
+                                    input[type="date"]::-webkit-calendar-picker-indicator {
+                                        filter: invert(1);
+                                        opacity: 0.7;
+                                    }
+                                </style>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Item Title *</label>
+                            <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="e.g. Blue North Face Backpack" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Detailed Description</label>
+                            <textarea id="description" th:field="*{description}" class="form-control" rows="4" placeholder="Mention any distinguishing marks, brands, or contents..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Location (Where it was lost/found) *</label>
+                            <input type="text" id="location" th:field="*{location}" class="form-control" placeholder="e.g. Library 2nd Floor, Table 4" required>
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 3rem 0;">
+                        <h3 style="margin-bottom: 2rem; color: var(--primary);">Contact Information</h3>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <label for="contactName">Your Name *</label>
+                                <input type="text" id="contactName" th:field="*{contactName}" class="form-control" required>
+                            </div>
+                            <div>
+                                <label for="contactEmail">Your Email *</label>
+                                <input type="email" id="contactEmail" th:field="*{contactEmail}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 3rem; display: flex; justify-content: flex-end; gap: 1.5rem;">
+                            <a href="/" class="btn-secondary" style="background:var(--bg-matte); color:var(--text-main)!important; border: 1px solid rgba(255,255,255,0.1);">Cancel</a>
+                            <button type="submit" class="btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">Submit Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Removed 3D Tilt Script to resolve reported interaction issues
+        
+        // Robust Interaction Helper: Ensure fields focus when group is clicked
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.addEventListener('click', (groupEvent) => {
+                const input = group.querySelector('input, textarea, select');
+                if (input) {
+                    input.focus();
+                }
+            });
+        });
+
+        console.log('Interaction helper initialized. 3D tilt disabled for stability.');
+    </script>
+</body>
+</html>
